@@ -1,4 +1,6 @@
-
+#-------------------------------------
+# Rol - AWS Glue
+#-------------------------------------
 # Definir política de confianza
 data "aws_iam_policy_document" "glue_assume_role_policy" {
   statement {
@@ -11,7 +13,7 @@ data "aws_iam_policy_document" "glue_assume_role_policy" {
 }
 # Crear ROL y asignarle la política de confianza
 resource "aws_iam_role" "glue_service_role" {
-  name               = "AWSGlueCrwRole"
+  name               = "AWSGlueRole"
   assume_role_policy = data.aws_iam_policy_document.glue_assume_role_policy.json
 }
 
@@ -40,6 +42,7 @@ data "aws_iam_policy_document" "glue_s3_and_data_catalog_policy_document" {
     effect = "Allow"
     actions = [
       "glue:CreateTable",
+      "glue:GetTable",
       "glue:GetDatabase",
       "glue:GetDataCatalogEncryptionSettings"
     ]
@@ -51,4 +54,61 @@ data "aws_iam_policy_document" "glue_s3_and_data_catalog_policy_document" {
 resource "aws_iam_role_policy_attachment" "glue_s3_and_data_catalog_policy_attachment" {
   role       = aws_iam_role.glue_service_role.name
   policy_arn = aws_iam_policy.glue_s3_and_data_catalog_policy.arn
+}
+
+#---------------------------------------
+# Rol - Amazon Lambda
+#---------------------------------------
+resource "aws_iam_role" "lambda_glue_rol" {
+  name               = "lambda_glue_rol"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
+
+  inline_policy {
+    name = "lambda-s3-access"
+    policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Effect = "Allow"
+          Action = [
+            "s3:GetObject",
+            "s3:ListBucket"
+          ]
+          Resource = ["*"] 
+         # [
+            #"arn:aws:s3:::${var.bucket_lambda_scripts_name}/*",
+            #"arn:aws:s3:::${var.bucket_lambda_scripts_name}"
+         # ]
+        }
+      ]
+    })
+  }
+
+  inline_policy {
+    name = "lambda-glue-access"
+    policy = jsonencode({
+      Version   = "2012-10-17",
+      Statement = [{
+        Effect   = "Allow",
+        Action   = [
+          "glue:GetTable",
+          "glue:CreateTable",
+          "glue:UpdateTable",
+          "glue:DeleteTable"
+        ],
+        Resource = "*"
+      }]
+    })
+  }
+}
+
+data "aws_iam_policy_document" "lambda_assume_role_policy" {
+  statement {
+    effect = "Allow"
+    principals {
+      type = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
 }
