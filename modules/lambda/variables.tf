@@ -1,5 +1,5 @@
 #----------------------------------------
-# Amazon Lambda
+# Lambda Module Variables
 #----------------------------------------
 variable "lambda_description" {
   description = "(Opcional) Descripción de lo que hace su función Lambda."
@@ -37,7 +37,7 @@ variable "scripts_lambda_path" {
 
 variable "lambda_zip_files" {
   type    = list(string)
-  default = ["uptable_br_glue", "uptable_sl_glue"]
+  default = ["uptable_br_glue", "uptable_sl_glue", "uptable_gd_glue"]
 }
 
 variable "folder_scripts_lambda" {
@@ -46,7 +46,7 @@ variable "folder_scripts_lambda" {
 }
 
 #------------------------------------
-# Others
+# Others Variables
 #------------------------------------
 variable "bucket_lambda_scripts_name" {
   description = "Lambda script buckets"

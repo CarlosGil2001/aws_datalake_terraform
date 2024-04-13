@@ -1,52 +1,94 @@
-# resource "aws_sfn_state_machine" "datalake_workflow" {
-#   name     = "datalake-workflow"
-#   role_arn = var.glue_rol_crw
+resource "aws_sfn_state_machine" "data_processing_workflow" {
+  name     = "data_processing_workflow"
+  role_arn = aws_iam_role.step_function_role.arn
+  definition = <<EOF
+{
+  "Comment": "Data Processing Workflow",
+  "StartAt": "RunCrawlerBronze",
+  "States": {
+    "RunCrawlerBronze": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:glue:startCrawler",
+      "Parameters": {
+        "Name": "dev_crw_bronzezone"
+      },
+      "Next": "RunLambdaBronze"
+    },
+    "RunLambdaBronze": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_br_glue",
+      "Next": "RunETLJobSilver"
+    },
+    "RunETLJobSilver": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:glue:startJobRun",
+      "Parameters": {
+        "JobName": "dev_job_silverzone"
+      },
+      "Next": "RunCrawlerSilver"
+    },
+    "RunCrawlerSilver": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:glue:startCrawler",
+      "Parameters": {
+        "Name": "dev_crw_silverzone"
+      },
+      "Next": "RunLambdaSilver"
+    },
+    "RunLambdaSilver": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_sl_glue",
+      "Next": "RunETLJobGold"
+    },
+    "RunETLJobGold": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:glue:startJobRun",
+      "Parameters": {
+        "JobName": "dev_job_goldzone"
+      },
+     "Next": "RunCrawlerGold"
+    },
+    "RunCrawlerGold": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:glue:startCrawler",
+      "Parameters": {
+        "Name": "dev_crw_goldzone"
+      },
+      "Next": "RunLambdaGold"
+    },
+    "RunLambdaGold": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_gd_glue",
+      "End": true
+    }
+  }
+}
+EOF
+}
 
-#   definition = jsonencode({
-#     Comment = "Flujo de trabajo para el procesamiento del Data Lake",
-#     StartAt = "BronzeCrawler",
-#     States = {
-#       BronzeCrawler = {
-#         Type    = "Task",
-#         Resource = "crw_bronzezone",
-#         Next    = "SilverJob"
-#       },
-#       SilverJob = {
-#         Type    = "Task",
-#         Resource = "job_silverzone",
-#         Next    = "SilverCrawler"
-#       },
-#       SilverCrawler = {
-#         Type    = "Task",
-#         Resource = "crw_silverzone",
-#         Next    = "GoldJob"
-#       },
-#       GoldJob = {
-#         Type    = "Task",
-#         Resource = "job_goldzone",
-#         End     = true
-#       }
-#     }
-#   })
-# }
+# Define el rol IAM
+resource "aws_iam_role" "step_function_role" {
+  name = "step_function_role"
 
-# # Define las políticas y roles necesarios para la ejecución de Step Functions
-# resource "aws_iam_role" "stepfunctions_role" {
-#   name = "stepfunctions-role"
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "states.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
 
-#   assume_role_policy = jsonencode({
-#     Version = "2012-10-17",
-#     Statement = [{
-#       Effect    = "Allow",
-#       Principal = {
-#         Service = "states.amazonaws.com"
-#       },
-#       Action = "sts:AssumeRole"
-#     }]
-#   })
-# }
-
-# resource "aws_iam_role_policy_attachment" "stepfunctions_policy_attachment" {
-#   role       = aws_iam_role.stepfunctions_role.name
-#   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSStepFunctionsFullAccess"
-# }
+# Adjunta la política de ejecución del Step Function al rol IAM
+resource "aws_iam_policy_attachment" "step_function_policy_attachment" {
+  name       = "step_function_policy_attachment"
+  roles      = [aws_iam_role.step_function_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSStepFunctionsFullAccess"
+}

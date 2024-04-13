@@ -1,29 +1,28 @@
-
 #--------------------------------------
 # S3 Module Variables
 #--------------------------------------
 variable "tags" {
-  description = "Tags del proyecto"
+  description = "Project tags"
   type = map(string)
 }
 
 variable "bucket_names" {
-  description = "Capas del datalake"
+  description = "Data lake layers"
   type        = set(string)
 }
 
 variable "folder_names_buckets" {
-  description = "Nombres de las carpetas dentro de los buckets"
+  description = "Folder names"
   type        = list(string)
 }
 
 variable "bucket_scripts_jobs" {
-  description = "Buckets de los scripts jobs"
+  description = "Bucket of job scripts"
   type        = string
 }
 
 variable "type_encrypted" {
-  description = "Tipo de encrypted"
+  description = "Encryption type at rest"
   type        = string
   default = "AES256"
 }
@@ -34,12 +33,12 @@ variable "scripts_jobs_path" {
 }
 
 variable "folder_scripts_jobs" {
-  description = "Folders de los scripts jobs"
+  description = "Jobs scripts folder"
   type        = string
 }
 
 variable "bucket_scripts_lambda" {
-  description = "Buckets de los scripts lambda"
+  description = "Bucket of lambda scripts"
   type        = string
 }
 
@@ -49,6 +48,6 @@ variable "scripts_lambda_path" {
 }
 
 variable "folder_scripts_lambda" {
-  description = "Folders de los scripts lambda"
+  description = "Lambda scripts folder"
   type        = string
 }

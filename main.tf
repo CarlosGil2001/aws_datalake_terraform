@@ -37,6 +37,7 @@ module "iam" {
   source = "./modules/iam"
   bucket_arns = module.s3.bucket_arns
   database_arn = module.glue.database_arn
+  cloudwatch_log_group_arn = module.cloudwatch.cloudwatch_log_group_arn
 }
 
 #----------------------------------------
@@ -58,3 +59,10 @@ module "lambda" {
   scripts_lambda_path = var.scripts_lambda_path
   lambda_glue_rol_arn = module.iam.lambda_glue_rol_arn
 }
+
+module "step_function" {
+     source = "./modules/step_function"
+     crawler_arns         = tolist(values(module.glue.crawler_arns))
+     job_arns             = module.glue.job_arns
+     lambda_function_arns = tolist(values(module.lambda.lambda_function_arns))
+   }

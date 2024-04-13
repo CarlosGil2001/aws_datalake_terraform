@@ -16,6 +16,9 @@
 #    filename         = "s3://bk-lambdafunctions-project1-dev-useast1/scripts_lambda/uptable_br_glue.zip"
 #  }
 
+#---------------------------------------------
+# Lambda functions
+#---------------------------------------------
 resource "aws_lambda_function" "lambda_function_glue" {
   count            = length(var.lambda_zip_files)
   function_name    = "lambda-${var.lambda_zip_files[count.index]}"

@@ -32,8 +32,9 @@ scripts_jobs_path = {
 folder_scripts_jobs = "scripts_jobs"
 folder_scripts_lambda = "scripts_lambda"
 scripts_lambda_path = {
-  "uptable_br_glue" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/uptable_br_glue.zip"
-  "uptable_sl_glue" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/uptable_sl_glue.zip"
+  "uptable_br_glue" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/uptable_br_glue/uptable_br_glue.zip"
+  "uptable_sl_glue" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/uptable_sl_glue/uptable_sl_glue.zip"
+  "uptable_gd_glue" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/uptable_gd_glue/uptable_gd_glue.zip"
 }
 
 bucket_scripts_lambda = "lambdafunctions"

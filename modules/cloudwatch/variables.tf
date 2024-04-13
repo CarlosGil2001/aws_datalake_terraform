@@ -1,6 +1,6 @@
-#-------------------------------
-# CloudWatch
-#-------------------------------
+#----------------------------------
+# CloudWatch Module Variables
+#----------------------------------
 variable "cloudwatch_log_group_name" {
   description = "(Optional, Forces new resource) The name of the log group"
   type = string

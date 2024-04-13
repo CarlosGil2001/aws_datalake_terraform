@@ -1,3 +1,6 @@
+#--------------------------------------
+# Glue Module Variables
+#--------------------------------------
 
 #-------------------------------------------
 # Tags Project
@@ -14,6 +17,7 @@ variable "catalog_database_name" {
   description = "Name Database Catalog"
   type        = string
 }
+
 variable "catalog_database_description" {
   description = "Description of the database."
   type        = string
@@ -42,6 +46,7 @@ variable "crawler_names" {
   description = "Name Crawlers"
   type = list(string)
 }
+
 variable "crawler_description" {
   description = "Description crawlers"
   type        = string
@@ -77,7 +82,7 @@ variable "crawler_table_prefix" {
 #  AWS Glue ETL Job
 #-------------------------------------
 variable "glue_rol" {
-  description = "Rol de Glue"
+  description = "Role Glue"
   type = string
 }
 
@@ -134,8 +139,14 @@ variable "job_lenguage" {
   default = "python"
 }
 
+variable "job_python_version" {
+  description = "Python version of the job"
+  type = string
+  default = "3"
+}
+
 #-----------------------------------
-# Others
+# Others Variables
 #-----------------------------------
 variable "bucket_arns" {
    description = "ARN buckets"
