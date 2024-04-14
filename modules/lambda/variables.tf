@@ -58,7 +58,7 @@ variable "bucket_lambda_scripts_arn" {
   type        = string
 }
 
-variable "lambda_glue_rol_arn" {
+variable "lambda_glue_role_arn" {
   description = "Rol lambda"
   type        = string
 }

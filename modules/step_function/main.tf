@@ -1,7 +1,7 @@
 resource "aws_sfn_state_machine" "data_processing_workflow" {
-  name     = "data_processing_workflow"
-  role_arn = aws_iam_role.step_function_role.arn
-  definition = <<EOF
+  name          = "data_processing_workflow"
+  role_arn      = var.step_function_role_arn
+  definition    = <<EOF
 {
   "Comment": "Data Processing Workflow",
   "StartAt": "RunCrawlerBronze",
@@ -64,31 +64,4 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
   }
 }
 EOF
-}
-
-# Define el rol IAM
-resource "aws_iam_role" "step_function_role" {
-  name = "step_function_role"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "states.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
-}
-
-# Adjunta la política de ejecución del Step Function al rol IAM
-resource "aws_iam_policy_attachment" "step_function_policy_attachment" {
-  name       = "step_function_policy_attachment"
-  roles      = [aws_iam_role.step_function_role.name]
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSStepFunctionsFullAccess"
 }

@@ -81,7 +81,7 @@ variable "crawler_table_prefix" {
 #-------------------------------------
 #  AWS Glue ETL Job
 #-------------------------------------
-variable "glue_rol" {
+variable "glue_role" {
   description = "Role Glue"
   type = string
 }

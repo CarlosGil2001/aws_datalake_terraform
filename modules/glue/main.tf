@@ -28,7 +28,7 @@ resource "aws_glue_crawler" "data_lake_crawler" {
   count          = length(local.suffixed_crawler_names)
   name           = local.suffixed_crawler_names[count.index]
   database_name  = aws_glue_catalog_database.catalog_database.name
-  role           = var.glue_rol
+  role           = var.glue_role
 
   description    = var.crawler_description
   classifiers    = var.crawler_classifiers  
@@ -39,7 +39,7 @@ resource "aws_glue_crawler" "data_lake_crawler" {
   s3_target {
     path = "s3://${regex("arn:aws:s3:::(.+)", lookup(var.bucket_arns, substr(local.suffixed_crawler_names[count.index], 8, -1), ""))[0]}"
   }
-   depends_on = [ var.glue_rol, aws_glue_catalog_database.catalog_database ]
+   depends_on = [ var.glue_role, aws_glue_catalog_database.catalog_database ]
  }
 
 #-----------------------------------------
@@ -48,7 +48,7 @@ resource "aws_glue_crawler" "data_lake_crawler" {
 resource "aws_glue_job" "glue_etl_jobs" {
   for_each = var.job_names
   name     = "${var.tags.env}_${each.value}"
-  role_arn = var.glue_rol
+  role_arn = var.glue_role
 
   description       = var.job_description
   glue_version      = var.job_glue_version
@@ -76,7 +76,7 @@ resource "aws_glue_job" "glue_etl_jobs" {
     "--enable-metrics"                   = "true"
   }
 
-  depends_on = [ var.glue_rol, var.cloudwatch_log_group_name ]
+  depends_on = [ var.glue_role, var.cloudwatch_log_group_name ]
 }
 
 

@@ -24,7 +24,7 @@ resource "aws_lambda_function" "lambda_function_glue" {
   function_name    = "lambda-${var.lambda_zip_files[count.index]}"
 
   description      = var.lambda_description 
-  role             = var.lambda_glue_rol_arn
+  role             = var.lambda_glue_role_arn
   handler          = var.lambda_handler
   runtime          = var.lambda_runtime
   memory_size      = var.lambda_memory_size
@@ -35,6 +35,6 @@ resource "aws_lambda_function" "lambda_function_glue" {
     Name = count.index
   }
 
-  depends_on = [ var.lambda_glue_rol_arn ]
+  depends_on = [ var.lambda_glue_role_arn ]
     
 }
