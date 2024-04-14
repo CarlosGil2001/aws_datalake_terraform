@@ -62,7 +62,7 @@ resource "aws_iam_role_policy_attachment" "glue_s3_data_catalog_policy_attachmen
 #---------------------------------------
 # Rol - Amazon Lambda
 #---------------------------------------
-resource "aws_iam_role" "lambda_glue_rol" {
+resource "aws_iam_role" "lambda_glue_role" {
   name               = var.role_lambda_name
   description        = var.role_lambda_description
   name_prefix        = var.role_lambda_name_prefix 
@@ -119,3 +119,52 @@ data "aws_iam_policy_document" "lambda_assume_role_policy" {
 #---------------------------------------
 # Rol - AWS Step Function
 #---------------------------------------
+resource "aws_iam_role" "step_function_role" {
+  name = "step_function_role"
+  description = ""
+  name_prefix = ""
+
+  assume_role_policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : {
+          "Service" : "states.amazonaws.com"
+        },
+        "Action" : "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy_attachment" "step_function_policy_attachment" {
+  name       = "step_function_policy_attachment"
+  roles      = [aws_iam_role.step_function_role.name]
+  policy_arn = aws_iam_policy.step_function_policy.arn
+}
+
+resource "aws_iam_policy" "step_function_policy" {
+  name        = "step_function_policy"
+  description = "Permisos para ejecutar AWS Glue Crawler, AWS Glue ETL Jobs y AWS Lambdas"
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "glue:StartCrawler",
+          "glue:StartJobRun",
+          "lambda:InvokeFunction"
+        ],
+        "Resource" : "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "step_function_policy_attachment" {
+  role       = aws_iam_role.step_function_role.name
+  policy_arn = aws_iam_policy.step_function_policy.arn
+}

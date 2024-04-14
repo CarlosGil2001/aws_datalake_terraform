@@ -23,7 +23,7 @@ module "glue" {
   tags = var.tags
   crawler_names = var.crawler_names
   bucket_arns = module.s3.bucket_arns
-  glue_rol = module.iam.glue_rol
+  glue_role = module.iam.glue_role
   job_names = var.job_names
   folder_scripts_jobs = var.folder_scripts_jobs
   bucket_job_scripts = module.s3.bucket_job_scripts
@@ -57,12 +57,13 @@ module "lambda" {
   folder_scripts_lambda = var.folder_scripts_lambda
   bucket_lambda_scripts_arn = module.s3.bucket_lambda_scripts_arn
   scripts_lambda_path = var.scripts_lambda_path
-  lambda_glue_rol_arn = module.iam.lambda_glue_rol_arn
+  lambda_glue_role_arn = module.iam.lambda_glue_role_arn
 }
 
 module "step_function" {
      source = "./modules/step_function"
-     crawler_arns         = tolist(values(module.glue.crawler_arns))
-     job_arns             = module.glue.job_arns
-     lambda_function_arns = tolist(values(module.lambda.lambda_function_arns))
+     crawler_arns           = tolist(values(module.glue.crawler_arns))
+     job_arns               = module.glue.job_arns
+     lambda_function_arns   = tolist(values(module.lambda.lambda_function_arns))
+     step_function_role_arn  = module.iam.step_function_role_arn
    }
