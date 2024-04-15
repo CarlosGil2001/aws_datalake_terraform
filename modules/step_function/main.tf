@@ -39,7 +39,28 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
       "Parameters": {
         "job_name": "dev_job_silverzone"
       },
-      "Next": "RunCrawlerSilver"
+      "Next": "ValidateJobSilver"
+    },
+    "ValidateJobSilver": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$",
+          "StringEquals": "{\"validation_result\": \"success\"}",
+          "Next": "RunCrawlerSilver"
+        },
+        {
+          "Variable": "$.validation_result",
+          "StringEquals": "failure",
+          "Next": "JobFailed"
+        }
+      ],
+      "Default": "RunCrawlerSilver"
+    },
+    "JobFailed": {
+      "Type": "Fail",
+      "Error": "Validation failed",
+      "Cause": "The validation step did not pass."
     },
     "RunCrawlerSilver": {
       "Type": "Task",
@@ -64,7 +85,23 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
       "Parameters": {
         "job_name": "dev_job_goldzone"
       },
-      "Next": "RunCrawlerGold"
+      "Next": "ValidateJobGold"
+    },
+    "ValidateJobGold": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$",
+          "StringEquals": "{\"validation_result\": \"success\"}",
+          "Next": "RunCrawlerGold"
+        },
+        {
+          "Variable": "$.validation_result",
+          "StringEquals": "failure",
+          "Next": "JobFailed"
+        }
+      ],
+      "Default": "RunCrawlerGold"
     },
     "RunCrawlerGold": {
       "Type": "Task",
