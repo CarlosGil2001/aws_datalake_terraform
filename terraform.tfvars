@@ -34,6 +34,7 @@ folder_scripts_lambda = "scripts_lambda"
 scripts_lambda_path = {
   "update_tables_glue" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/update_tables_glue/update_tables_glue.zip"
   "run_crawlers" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/run_crawlers/run_crawlers.zip"
+  "run_jobs" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/run_jobs/run_jobs.zip"
 }
 
 bucket_scripts_lambda = "lambdafunctions"

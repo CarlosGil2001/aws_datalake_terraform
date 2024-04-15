@@ -6,7 +6,6 @@ def lambda_handler(event, context):
     glue_client = boto3.client('glue')
     logs_client = boto3.client('logs')
 
-   #crawler_name = 'dev_crw_bronzezone'
     crawler_name = event.get('crawler_name', None)
     if crawler_name is None:
         raise ValueError("El nombre del crawler no ha sido proporcionado en el evento.")
@@ -24,7 +23,7 @@ def lambda_handler(event, context):
 
         if crawler_state == 'STOPPING':
             print('El Crawler se ejecutó correctamente.')
-            return state
+            return 200
         elif crawler_state == 'FAILED':
             print('El Crawler falló durante la ejecución.')
             return
@@ -39,7 +38,7 @@ def lambda_handler(event, context):
                 message = event['message'].strip()
                 if 'Crawler has finished running and is in state READY' in message:
                     print('El Crawler se ejecutó correctamente.')
-                    return state
+                    return 200
                 elif 'Crawler execution failed' in message:
                     print('El Crawler falló durante la ejecución.')
                     return

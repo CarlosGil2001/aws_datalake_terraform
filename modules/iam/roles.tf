@@ -103,6 +103,38 @@ resource "aws_iam_role" "lambda_glue_role" {
       ]
     })
   }
+  inline_policy {
+    name = "lambda-athena-access"
+    policy = jsonencode({
+    Version = var.policy_version,
+    Statement = [
+      {
+        Effect    = var.effect_policy,
+        Action    = [
+          "athena:StartQueryExecution",
+          "athena:GetQueryExecution",
+          "athena:GetQueryResults"
+        ],
+        Resource  = var.resource_policy
+      }
+    ]
+  })
+}
+  inline_policy {
+    name = "lambda-cloudwatch-access"
+    policy = jsonencode({
+    Version = var.policy_version,
+    Statement = [
+      {
+        Effect    = var.effect_policy,
+        Action    = [
+          "logs:FilterLogEvents"
+        ],
+        Resource  = var.resource_policy
+      }
+    ]
+  })
+}
 }
 
 data "aws_iam_policy_document" "lambda_assume_role_policy" {
@@ -125,10 +157,10 @@ resource "aws_iam_role" "step_function_role" {
   name = "step_function_role"
 
   assume_role_policy = jsonencode({
-    "Version" : "2012-10-17",
+    "Version" : var.policy_version,
     "Statement" : [
       {
-        "Effect" : "Allow",
+        "Effect" : var.effect_policy,
         "Principal" : {
           "Service" : "states.amazonaws.com"
         },
@@ -149,12 +181,11 @@ resource "aws_iam_policy" "step_function_policy" {
   description = "Permisos para ejecutar AWS Glue Crawler, AWS Glue ETL Jobs y AWS Lambdas"
 
   policy = jsonencode({
-    "Version" : "2012-10-17",
+    "Version" : var.policy_version,
     "Statement" : [
       {
-        "Effect" : "Allow",
+        "Effect" : var.effect_policy,
         "Action" : [
-          "glue:StartCrawler",
           "glue:StartJobRun",
           "lambda:InvokeFunction"
         ],

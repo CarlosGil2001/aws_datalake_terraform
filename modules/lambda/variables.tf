@@ -4,7 +4,7 @@
 variable "lambda_description" {
   description = "(Opcional) Descripción de lo que hace su función Lambda."
   type = string
-  default = "Functions that update the name of tables in aws glue database catalog"
+  default = "Data Lake Functions"
 }
 
 variable "lambda_handler" {
@@ -37,7 +37,7 @@ variable "scripts_lambda_path" {
 
 variable "lambda_zip_files" {
   type    = list(string)
-  default = ["update_tables_glue", "run_crawlers"]
+  default = ["update_tables_glue", "run_crawlers", "run_jobs"]
 }
 
 variable "folder_scripts_lambda" {

@@ -1,6 +1,16 @@
+#--------------------------------------
+# Step Function - Workflow
+#--------------------------------------
+
 resource "aws_sfn_state_machine" "data_processing_workflow" {
-  name          = "processing_workflow"
+  name          = var.step_function_name
   role_arn      = var.step_function_role_arn
+  name_prefix   = var.step_function_name_prefix
+
+  tags = {
+    "Name" : var.step_function_name
+  }
+
   definition    = <<EOF
 {
   "Comment": "Data Processing Workflow",
@@ -16,14 +26,18 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
     },
     "UpdateTableBronze": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_br_glue",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-update_tables_glue",
+      "Parameters": {
+        "old_table_name": "bk_bronzezone_project1_dev_useast1",
+        "new_table_name": "ds_salaries_br"
+      },
       "Next": "RunETLJobSilver"
     },
     "RunETLJobSilver": {
       "Type": "Task",
-      "Resource": "arn:aws:states:::aws-sdk:glue:startJobRun",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-run_jobs",
       "Parameters": {
-        "JobName": "dev_job_silverzone"
+        "job_name": "dev_job_silverzone"
       },
       "Next": "RunCrawlerSilver"
     },
@@ -37,14 +51,18 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
     },
     "UpdateTableSilver": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_sl_glue",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-update_tables_glue",
+      "Parameters": {
+        "old_table_name": "bk_silverzone_project1_dev_useast1",
+        "new_table_name": "ds_salaries_sl"
+      },
       "Next": "RunETLJobGold"
     },
     "RunETLJobGold": {
       "Type": "Task",
-      "Resource": "arn:aws:states:::aws-sdk:glue:startJobRun",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-run_jobs",
       "Parameters": {
-        "JobName": "dev_job_goldzone"
+        "job_name": "dev_job_goldzone"
       },
       "Next": "RunCrawlerGold"
     },
@@ -58,77 +76,14 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
     },
     "UpdateTableGold": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_gd_glue",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-update_tables_glue",
+      "Parameters": {
+        "old_table_name": "bk_goldzone_project1_dev_useast1",
+        "new_table_name": "ds_salaries_gd"
+      },
       "End": true
     }
   }
 }
 EOF
 }
-
-
-
-
-/*
-{
-  "Comment": "Data Processing Workflow",
-  "StartAt": "RunCrawlerBronze",
-  "States": {
-    "RunCrawlerBronze": {
-      "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:testRunCrawler",
-      "Parameters": {
-        "crawler_name": "dev_crw_bronzezone"
-      },
-      "Next": "RunUpdateTable"
-    },
-    "RunUpdateTable": {
-      "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_br_glue",
-      "Next": "RunETLJobSilver"
-    },
-    "RunETLJobSilver": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::aws-sdk:glue:startJobRun",
-      "Parameters": {
-        "JobName": "dev_job_silverzone"
-      },
-      "Next": "RunCrawlerSilver"
-    },
-    "RunCrawlerSilver": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::aws-sdk:glue:startCrawler",
-      "Parameters": {
-        "Name": "dev_crw_silverzone"
-      },
-      "Next": "RunLambdaSilver"
-    },
-    "RunLambdaSilver": {
-      "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_sl_glue",
-      "Next": "RunETLJobGold"
-    },
-    "RunETLJobGold": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::aws-sdk:glue:startJobRun",
-      "Parameters": {
-        "JobName": "dev_job_goldzone"
-      },
-      "Next": "RunCrawlerGold"
-    },
-    "RunCrawlerGold": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::aws-sdk:glue:startCrawler",
-      "Parameters": {
-        "Name": "dev_crw_goldzone"
-      },
-      "Next": "RunLambdaGold"
-    },
-    "RunLambdaGold": {
-      "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_gd_glue",
-      "End": true
-    }
-  }
-}
-*/

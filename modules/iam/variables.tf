@@ -126,7 +126,7 @@ variable "policy_lambda_s3_name" {
 variable "policy_lambda_s3_actions" {
   description = "Policy actions with access to S3."
   type        = list(string)
-  default     = ["s3:GetObject","s3:ListBucket", "s3:PutObject"]
+  default     = ["s3:GetObject","s3:ListBucket", "s3:PutObject", "s3:GetBucketLocation"] 
 }
 
 variable "policy_lambda_glue_name" {
@@ -138,7 +138,7 @@ variable "policy_lambda_glue_name" {
 variable "policy_lambda_glue_actions" {
   description = "Policy actions with access to glue."
   type        = list(string)
-  default     = ["glue:CreateTable", "glue:UpdateTable", "glue:DeleteTable"]
+  default     = ["glue:CreateTable", "glue:UpdateTable", "glue:DeleteTable", "glue:GetCrawler", "glue:StartCrawler", "glue:GetPartitions", "glue:GetPartition", "glue:BatchCreatePartition", "glue:StartJobRun", "glue:GetJobRun"]
 }
 
 variable "policy_lambda_glue_table_actions" {

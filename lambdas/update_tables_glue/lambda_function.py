@@ -45,7 +45,7 @@ def lambda_handler(event, context):
     if table_exists:
         print(f"La tabla {old_table_name} ya existe en el catálogo de Glue.")
     else:
-        print(f"La tabla {old_table_name} ha sido creada correctamente.")
+        print(f"La tabla {new_table_name} ha sido creada correctamente.")
         
     query = f"INSERT INTO {new_table_name} SELECT * FROM {old_table_name};"
 
