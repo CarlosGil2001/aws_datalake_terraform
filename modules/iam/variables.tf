@@ -83,9 +83,9 @@ variable "policy_glue_log_action" {
 variable "policy_glue_action" {
   description = "Glue role policy actions with glue."
   type = list(string)
-  default = ["glue:CreateTable","glue:GetTable","glue:GetDatabase","glue:BatchGetPartition","glue:BatchCreatePartition"]
+  default = ["glue:CreateTable","glue:GetTable","glue:GetDatabase","glue:BatchGetPartition","glue:BatchCreatePartition", "glue:GetPartitions"]
 }
-
+#
 variable "policy_glue_encr_action" {
   description = "Glue role policy actions with encryption."
   type = list(string)
@@ -126,7 +126,7 @@ variable "policy_lambda_s3_name" {
 variable "policy_lambda_s3_actions" {
   description = "Policy actions with access to S3."
   type        = list(string)
-  default     = ["s3:GetObject","s3:ListBucket"]
+  default     = ["s3:GetObject","s3:ListBucket", "s3:PutObject"]
 }
 
 variable "policy_lambda_glue_name" {

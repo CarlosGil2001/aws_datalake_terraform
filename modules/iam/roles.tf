@@ -116,13 +116,13 @@ data "aws_iam_policy_document" "lambda_assume_role_policy" {
   }
 }
 
+# Agrega politica de permisos a Athena
+
 #---------------------------------------
 # Rol - AWS Step Function
 #---------------------------------------
 resource "aws_iam_role" "step_function_role" {
   name = "step_function_role"
-  description = ""
-  name_prefix = ""
 
   assume_role_policy = jsonencode({
     "Version" : "2012-10-17",

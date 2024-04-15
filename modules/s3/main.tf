@@ -122,3 +122,19 @@ resource "aws_s3_object" "bucket_objects_scripts_lambda" {
 
   depends_on = [ aws_s3_bucket.bucket_scripts_lambda ]
 }
+
+#---------------------------------------------------
+# Bucket Athena
+#--------------------------------------------------
+resource "aws_s3_bucket" "bucket_athena" {
+  bucket      = "bk-${var.bucket_athena}-${local.s3-sufix}"
+  tags = {
+    Name = var.bucket_athena
+  }
+  force_destroy = true
+  
+  lifecycle {
+    prevent_destroy = false
+  }
+  
+}

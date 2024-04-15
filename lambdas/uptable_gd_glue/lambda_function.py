@@ -1,13 +1,18 @@
 import boto3
+import time
 
 def lambda_handler(event, context):
     glue = boto3.client('glue')
+    athena = boto3.client('athena')
+    s3 = boto3.client('s3')
+    
+    
     old_table_name = 'bk_goldzone_project1_dev_useast1'
     new_table_name = 'ds_salaries_gd'
     database_name = 'dev_aws_data'
-
+    output_location = 's3://bk-athenaresult-project1-dev-useast1/'
+    
     try:
-        # Verificar si la tabla 'ds_salaries_gd' ya existe
         response = glue.get_table(
             DatabaseName=database_name,
             Name=new_table_name
@@ -15,7 +20,6 @@ def lambda_handler(event, context):
         
         table_exists = True
     except glue.exceptions.EntityNotFoundException:
-        # Si la tabla 'ds_salaries_gd' no existe, se crea una nueva basada en la tabla 'bk-goldzone-project1-dev-useast1'
         table_exists = False
         response = glue.get_table(
             DatabaseName=database_name,
@@ -25,7 +29,6 @@ def lambda_handler(event, context):
         table_input = response['Table']
         table_input['Name'] = new_table_name
 
-        # Eliminar los parámetros no reconocidos
         del table_input['DatabaseName']
         del table_input['CreateTime']
         del table_input['UpdateTime']
@@ -34,7 +37,6 @@ def lambda_handler(event, context):
         del table_input['CatalogId']
         del table_input['VersionId']
 
-        # Crear la nueva tabla 'ds_salaries_gd'
         glue.create_table(
             DatabaseName=database_name,
             TableInput=table_input
@@ -44,18 +46,51 @@ def lambda_handler(event, context):
         print("La tabla 'ds_salaries_gd' ya existe en el catálogo de Glue.")
     else:
         print("La tabla 'ds_salaries_gd' ha sido creada correctamente.")
+        
+    query = f"INSERT INTO {new_table_name} SELECT * FROM {old_table_name};"
+    print(query)
 
-    # Eliminar la tabla 'bk-goldzone-project1-dev-useast1' si existe
+    response = athena.start_query_execution(
+        QueryString=query,
+        QueryExecutionContext={'Database': database_name},
+        ResultConfiguration={'OutputLocation': output_location}
+    )
+
+    query_execution_id = response['QueryExecutionId']
+
+    while True:
+        query_status = athena.get_query_execution(QueryExecutionId=query_execution_id)
+        state = query_status['QueryExecution']['Status']['State']
+        
+        if state == 'SUCCEEDED':
+            print("Consulta exitosa")
+            break
+        elif state == 'FAILED':
+            error_reason = query_status['QueryExecution']['Status']['StateChangeReason']
+            print(f"Consulta fallida: {error_reason}")
+            
+            if "SYNTAX_ERROR" in error_reason:
+                print("Error de sintaxis en la consulta SQL")
+            elif "PERMISSION_DENIED" in error_reason:
+                print("No tiene permisos para ejecutar la consulta")
+            
+            return {
+                "statusCode": 500,
+                "body": f"La consulta de Athena falló: {error_reason}"
+            }
+        else:
+            print(f"Esperando a que la consulta termine... Estado actual: {state}")
+            time.sleep(5)  
+
     try:
         glue.delete_table(
             DatabaseName=database_name,
             Name=old_table_name
         )
-        print("La tabla 'bk-goldzone-project1-dev-useast1' ha sido eliminada correctamente.")
+        print("La tabla 'old' ha sido eliminada correctamente.")
     except glue.exceptions.EntityNotFoundException:
-        print("La tabla 'bk-goldzone-project1-dev-useast1' no existe en el catálogo de Glue.")
+        print("La tabla 'old' no existe en el catálogo de Glue.")
 
-    # Finalmente, se devuelve un mensaje de éxito
     return {
         "statusCode": 200,
         "body": "Proceso completado exitosamente."

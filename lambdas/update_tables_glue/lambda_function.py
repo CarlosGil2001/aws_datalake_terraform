@@ -6,9 +6,9 @@ def lambda_handler(event, context):
     athena = boto3.client('athena')
     s3 = boto3.client('s3')
     
-    
-    old_table_name = 'bk_silverzone_project1_dev_useast1'
-    new_table_name = 'ds_salaries_sl'
+    old_table_name = event.get('old_table_name')
+    new_table_name = event.get('new_table_name')
+
     database_name = 'dev_aws_data'
     output_location = 's3://bk-athenaresult-project1-dev-useast1/'
 
@@ -43,12 +43,11 @@ def lambda_handler(event, context):
         )
 
     if table_exists:
-        print("La tabla 'ds_salaries_sl' ya existe en el catálogo de Glue.")
+        print(f"La tabla {old_table_name} ya existe en el catálogo de Glue.")
     else:
-        print("La tabla 'ds_salaries_sl' ha sido creada correctamente.")
+        print(f"La tabla {old_table_name} ha sido creada correctamente.")
         
     query = f"INSERT INTO {new_table_name} SELECT * FROM {old_table_name};"
-    print(query)
 
     response = athena.start_query_execution(
         QueryString=query,
@@ -76,7 +75,7 @@ def lambda_handler(event, context):
             
             return {
                 "statusCode": 500,
-                "body": f"La consulta de Athena falló: {error_reason}"
+                "body": f"La consulta falló: {error_reason}"
             }
         else:
             print(f"Esperando a que la consulta termine... Estado actual: {state}")

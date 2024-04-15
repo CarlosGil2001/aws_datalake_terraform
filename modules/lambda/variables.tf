@@ -37,7 +37,7 @@ variable "scripts_lambda_path" {
 
 variable "lambda_zip_files" {
   type    = list(string)
-  default = ["uptable_br_glue", "uptable_sl_glue", "uptable_gd_glue"]
+  default = ["update_tables_glue", "run_crawlers"]
 }
 
 variable "folder_scripts_lambda" {
@@ -61,5 +61,10 @@ variable "bucket_lambda_scripts_arn" {
 variable "lambda_glue_role_arn" {
   description = "Rol lambda"
   type        = string
+}
+
+variable "lambda_timeout" {
+  description = "(Optional) Amount of time your Lambda Function has to run in seconds."
+  default     = 240
 }
 

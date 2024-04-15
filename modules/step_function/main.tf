@@ -1,5 +1,5 @@
 resource "aws_sfn_state_machine" "data_processing_workflow" {
-  name          = "data_processing_workflow"
+  name          = "processing_workflow"
   role_arn      = var.step_function_role_arn
   definition    = <<EOF
 {
@@ -8,13 +8,81 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
   "States": {
     "RunCrawlerBronze": {
       "Type": "Task",
-      "Resource": "arn:aws:states:::aws-sdk:glue:startCrawler",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-run_crawlers",
       "Parameters": {
-        "Name": "dev_crw_bronzezone"
+        "crawler_name": "dev_crw_bronzezone"
       },
-      "Next": "RunLambdaBronze"
+      "Next": "UpdateTableBronze"
     },
-    "RunLambdaBronze": {
+    "UpdateTableBronze": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_br_glue",
+      "Next": "RunETLJobSilver"
+    },
+    "RunETLJobSilver": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:glue:startJobRun",
+      "Parameters": {
+        "JobName": "dev_job_silverzone"
+      },
+      "Next": "RunCrawlerSilver"
+    },
+    "RunCrawlerSilver": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-run_crawlers",
+      "Parameters": {
+        "crawler_name": "dev_crw_silverzone"
+      },
+      "Next": "UpdateTableSilver"
+    },
+    "UpdateTableSilver": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_sl_glue",
+      "Next": "RunETLJobGold"
+    },
+    "RunETLJobGold": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:glue:startJobRun",
+      "Parameters": {
+        "JobName": "dev_job_goldzone"
+      },
+      "Next": "RunCrawlerGold"
+    },
+    "RunCrawlerGold": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-run_crawlers",
+      "Parameters": {
+        "crawler_name": "dev_crw_goldzone"
+      },
+      "Next": "UpdateTableGold"
+    },
+    "UpdateTableGold": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_gd_glue",
+      "End": true
+    }
+  }
+}
+EOF
+}
+
+
+
+
+/*
+{
+  "Comment": "Data Processing Workflow",
+  "StartAt": "RunCrawlerBronze",
+  "States": {
+    "RunCrawlerBronze": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:testRunCrawler",
+      "Parameters": {
+        "crawler_name": "dev_crw_bronzezone"
+      },
+      "Next": "RunUpdateTable"
+    },
+    "RunUpdateTable": {
       "Type": "Task",
       "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-uptable_br_glue",
       "Next": "RunETLJobSilver"
@@ -46,7 +114,7 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
       "Parameters": {
         "JobName": "dev_job_goldzone"
       },
-     "Next": "RunCrawlerGold"
+      "Next": "RunCrawlerGold"
     },
     "RunCrawlerGold": {
       "Type": "Task",
@@ -63,5 +131,4 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
     }
   }
 }
-EOF
-}
+*/

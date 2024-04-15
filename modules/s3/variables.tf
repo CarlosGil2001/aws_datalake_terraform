@@ -51,3 +51,9 @@ variable "folder_scripts_lambda" {
   description = "Lambda scripts folder"
   type        = string
 }
+
+variable "bucket_athena" {
+  description = "Bucket Athena"
+  type = string
+  default = "athenaresult"
+}
