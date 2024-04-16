@@ -14,10 +14,14 @@ resource "aws_lambda_function" "lambda_function_glue" {
   timeout          = var.lambda_timeout
   filename         = var.scripts_lambda_path[var.lambda_zip_files[count.index]]
 
+  logging_config {
+    log_format = "Text"
+  }
+
   tags = {
     Name = count.index
   }
 
-  depends_on = [ var.lambda_glue_role_arn ]
+  depends_on = [ var.lambda_glue_role_arn, var.cloudwatch_log_group_name ]
     
 }

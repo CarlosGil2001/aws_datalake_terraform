@@ -59,3 +59,8 @@ variable "bucket_athena" {
   type = string
   default = "athenaresult"
 }
+
+variable "lambda_function_arns" {
+  description = "ARN lambdas."
+  type = list(string)
+}

@@ -32,14 +32,14 @@ resource "aws_glue_crawler" "data_lake_crawler" {
 
   description    = var.crawler_description
   classifiers    = var.crawler_classifiers  
-  configuration  = var.crawler_configuration
+  configuration = jsonencode(var.crawler_configuration)
   schedule       = var.crawler_schedule
   table_prefix   = var.crawler_table_prefix
 
   s3_target {
-    path = "s3://${regex("arn:aws:s3:::(.+)", lookup(var.bucket_arns, substr(local.suffixed_crawler_names[count.index], 8, -1), ""))[0]}"
+    path = "s3://${regex("arn:aws:s3:::(.+)", lookup(var.bucket_arns, substr(local.suffixed_crawler_names[count.index], 8, -1), ""))[0]}/jobs"
   }
-   depends_on = [ var.glue_role, aws_glue_catalog_database.catalog_database ]
+   depends_on = [ var.glue_role, aws_glue_catalog_database.catalog_database]
  }
 
 #-----------------------------------------

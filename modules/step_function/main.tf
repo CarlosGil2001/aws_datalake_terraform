@@ -27,7 +27,7 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
       "Type": "Task",
       "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-update_tables_glue",
       "Parameters": {
-        "old_table_name": "bk_bronzezone_project1_dev_useast1",
+        "old_table_name": "jobs",
         "new_table_name": "ds_salaries_br"
       },
       "Next": "RunETLJobSilver"
@@ -73,7 +73,7 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
       "Type": "Task",
       "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-update_tables_glue",
       "Parameters": {
-        "old_table_name": "bk_silverzone_project1_dev_useast1",
+        "old_table_name": "jobs",
         "new_table_name": "ds_salaries_sl"
       },
       "Next": "RunETLJobGold"
@@ -114,7 +114,7 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
       "Type": "Task",
       "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-update_tables_glue",
       "Parameters": {
-        "old_table_name": "bk_goldzone_project1_dev_useast1",
+        "old_table_name": "jobs",
         "new_table_name": "ds_salaries_gd"
       },
       "End": true

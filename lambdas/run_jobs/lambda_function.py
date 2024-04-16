@@ -33,4 +33,4 @@ def lambda_handler(event, context):
             for event in log_events['events']:
                 message = event['message'].strip()
                 print(f"Log message: {message}")
-        time.sleep(5)
+        time.sleep(10)

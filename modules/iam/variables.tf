@@ -171,6 +171,18 @@ variable "policy_lambda_cloudwatch_actions" {
   default     = ["logs:FilterLogEvents"]
 }
 
+variable "policy_lambda_stepfunction_name" {
+  description = "Policy name with access to step function."
+  type        = string
+  default     = "lambda-stepfunction-access"
+}
+
+variable "policy_lambda_stepfunction_actions" {
+  description = "Policy actions with access to step function."
+  type        = list(string)
+  default     = ["states:StartExecution"] 
+}
+
 #--------------------------------------
 # IAM Rol Step Functions
 #--------------------------------------

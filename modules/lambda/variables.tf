@@ -68,3 +68,8 @@ variable "lambda_timeout" {
   default     = 240
 }
 
+variable "cloudwatch_log_group_name" {
+  description = "Name cloudwatch group log"
+  type        = string
+}
+

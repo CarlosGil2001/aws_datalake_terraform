@@ -59,10 +59,13 @@ variable "crawler_classifiers" {
 }
 
 variable "crawler_configuration" {
-  description = "(Optional) JSON string of configuration information."
-  default     = null
+  description = "Configuración del crawler"
+  type        = any
+  default     = {
+    CreatePartitionIndex = false
+    Version              = 1
+  }
 }
-
 variable "crawler_schedule" {
   description = "(Optional) A cron expression used to specify the schedule. For more information, see Time-Based Schedules for Jobs and Crawlers. For example, to run something every day at 12:15 UTC, you would specify: cron(15 12 * * ? *)."
   default     = null

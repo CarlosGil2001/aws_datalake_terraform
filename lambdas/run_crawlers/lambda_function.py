@@ -3,6 +3,8 @@ import time
 from datetime import datetime
 
 def lambda_handler(event, context):
+    time.sleep(10) 
+
     glue_client = boto3.client('glue')
     logs_client = boto3.client('logs')
 
@@ -43,4 +45,4 @@ def lambda_handler(event, context):
                     print('El Crawler falló durante la ejecución.')
                     return
 
-        time.sleep(5) 
+        time.sleep(10) 

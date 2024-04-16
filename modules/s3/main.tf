@@ -21,16 +21,23 @@ resource "aws_s3_bucket" "datalake_buckets" {
   }
 }
 
+resource "aws_lambda_permission" "allow_s3" {
+  statement_id  = "AllowExecutionFromS3Bucket"
+  action        = "lambda:InvokeFunction"
+  function_name = var.lambda_function_arns[0]
+  principal     = "s3.amazonaws.com"
+  source_arn    = aws_s3_bucket.datalake_buckets["bronzezone"].arn
+}
+
 resource "aws_s3_bucket_notification" "bucket_bronze_notification" {
-  bucket = aws_s3_bucket.datalake_buckets[element([for name in var.bucket_names : name if name == "bronzezone"], 0)].id
+  bucket = aws_s3_bucket.datalake_buckets["bronzezone"].id
   lambda_function {
-    lambda_function_arn = "arn:aws:lambda:us-east-1:905418224712:function:lambda-s3_event"
+    lambda_function_arn = var.lambda_function_arns[0]
     events = ["s3:ObjectCreated:*"]
-    filter_prefix = ""
-    filter_suffix = ""
-    
+    filter_prefix  = "jobs/"
+    filter_suffix = ".csv"
   }
-  #depends_on = [ aws_s3_bucket.datalake_buckets ]
+  depends_on = [ aws_s3_bucket.datalake_buckets, var.lambda_function_arns ]
 }
 
 #------------------------------------------------------
@@ -91,7 +98,6 @@ resource "aws_s3_bucket" "bucket_scripts_jobs" {
   lifecycle {
     prevent_destroy = false
   }
-
 }
 
 #-----------------------------------------------
@@ -137,18 +143,18 @@ resource "aws_s3_object" "bucket_objects_scripts_lambda" {
 #---------------------------------------------------
 # Bucket Athena
 #--------------------------------------------------
-resource "aws_s3_bucket" "bucket_athena" {
-  bucket      = "bk-${var.bucket_athena}-${local.s3-sufix}"
-  tags = {
-    Name = var.bucket_athena
-  }
-  force_destroy = true
+# resource "aws_s3_bucket" "bucket_athena" {
+#   bucket      = "bk-${var.bucket_athena}-${local.s3-sufix}"
+#   tags = {
+#     Name = var.bucket_athena
+#   }
+#   force_destroy = true
   
-  lifecycle {
-    prevent_destroy = false
-  }
+#   lifecycle {
+#     prevent_destroy = false
+#   }
   
-}
+# }
 
 
 

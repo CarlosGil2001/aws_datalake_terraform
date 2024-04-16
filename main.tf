@@ -11,6 +11,7 @@ module "s3" {
   bucket_scripts_lambda = var.bucket_scripts_lambda
   folder_scripts_lambda = var.folder_scripts_lambda
   scripts_lambda_path = var.scripts_lambda_path
+  lambda_function_arns = tolist(values(module.lambda.lambda_function_arns))
 }
 
 #----------------------------------------
@@ -57,6 +58,7 @@ module "lambda" {
   bucket_lambda_scripts_arn = module.s3.bucket_lambda_scripts_arn
   scripts_lambda_path = var.scripts_lambda_path
   lambda_glue_role_arn = module.iam.lambda_glue_role_arn
+  cloudwatch_log_group_name = module.cloudwatch.cloudwatch_log_group_name
 }
 
 module "step_function" {

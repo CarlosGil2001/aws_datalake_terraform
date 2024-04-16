@@ -129,6 +129,20 @@ resource "aws_iam_role" "lambda_glue_role" {
     ]
   })
 }
+
+  inline_policy {
+    name = var.policy_lambda_stepfunction_name
+    policy = jsonencode({
+    Version = var.policy_version,
+    Statement = [
+      {
+        Effect    = var.effect_policy,
+        Action    = var.policy_lambda_stepfunction_actions,
+        Resource  = var.resource_policy
+      }
+    ]
+  })
+}
 }
 
 data "aws_iam_policy_document" "lambda_assume_role_policy" {
