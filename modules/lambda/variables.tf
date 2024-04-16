@@ -37,7 +37,7 @@ variable "scripts_lambda_path" {
 
 variable "lambda_zip_files" {
   type    = list(string)
-  default = ["update_tables_glue", "run_crawlers", "run_jobs"]
+  default = ["update_tables_glue", "run_crawlers", "run_jobs", "event_s3"]
 }
 
 variable "folder_scripts_lambda" {

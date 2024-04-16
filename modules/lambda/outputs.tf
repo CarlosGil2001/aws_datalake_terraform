@@ -1,3 +1,6 @@
+#-----------------------------------
+# Output Amazon Lambda 
+#-----------------------------------
 output "lambda_function_arns" {
   description = "ARNs Lambdas"
   value       = {

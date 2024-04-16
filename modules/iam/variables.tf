@@ -147,6 +147,73 @@ variable "policy_lambda_glue_table_actions" {
   default     =  ["glue:GetTable"]
 }
 
+variable "policy_lambda_athena_name" {
+  description = "Policy name with access to athena."
+  type        = string
+  default     = "lambda-athena-access"
+}
+
+variable "policy_lambda_athena_actions" {
+  description = "Policy actions with access to athena."
+  type        = list(string)
+  default     = ["athena:StartQueryExecution", "athena:GetQueryExecution", "athena:GetQueryResults"]
+}
+
+variable "policy_lambda_cloudwatch_name" {
+  description = "Policy name with access to cloudwatch."
+  type        = string
+  default     = "lambda-cloudwatch-access"
+}
+
+variable "policy_lambda_cloudwatch_actions" {
+  description = "Policy actions with access to cloudwatch."
+  type        = list(string)
+  default     = ["logs:FilterLogEvents"]
+}
+
+#--------------------------------------
+# IAM Rol Step Functions
+#--------------------------------------
+variable "role_step_function_name" {
+  description = "Friendly name of the role."
+  type        = string
+  default     = "AWSStepFunctionRole"
+}
+
+variable "role_step_function_description" {
+  description = "(Optional) Description of the role."
+  type        = string
+  default     = "Step Function Rol"
+}
+
+variable "role_step_function_name_prefix" {
+  description = "(Optional, Forces new resource) Creates a unique friendly name beginning with the specified prefix."
+  type        = string
+  default     = null
+}
+
+#--------------------------------------
+# IAM Policy Step Function
+#--------------------------------------
+variable "policy_step_function_name" {
+  description = "Policy name with access to glue and lambda."
+  type        = string
+  default     = "step_function_policy"
+}
+
+variable "policy_step_function_actions" {
+  description = "Policy actions with access to glue and lambda."
+  type        = list(string)
+  default     = ["glue:StartJobRun","lambda:InvokeFunction"] 
+}
+
+variable "policy_step_function_attachment" {
+  description = "Attach step function policy."
+  type        = string
+  default     = "step_function_policy_attachment"
+}
+
+
 #-------------------------------------
 # Other Variables
 #-------------------------------------

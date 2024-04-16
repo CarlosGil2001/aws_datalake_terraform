@@ -1,3 +1,6 @@
+#-----------------------------------------
+#  Global variable values
+#-----------------------------------------
 tags = {
   "env" = "dev"
   "owner" = "Carlos e Isac"
@@ -8,34 +11,29 @@ tags = {
   "region" = "useast1"
 }
 
-# Nombre de los bk para el datalake
 bucket_names= ["bronzezone", "silverzone", "goldzone"]
 
-# Nombre de folders de los bk
 folder_names_buckets= ["sales", "customer", "jobs"]
-
-# csv_files_paths={
-#     "ordenes"      = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/data/ordenes-202403.csv"
-#     "proveedores"   = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/data/proveedores-202403.csv"
-#     "entidades"    = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/data/entidades-202403.csv"
-#   }
 
 catalog_database_name = "aws_data"
  
 crawler_names = ["bronzezone", "silverzone", "goldzone"]
+
 bucket_scripts_jobs = "gluejobs"
+
 job_names = ["job_silverzone", "job_goldzone"]
-scripts_jobs_path = {
-  "job_silverzone" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/jobs/job_silverzone.py"
-  "job_goldzone" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/jobs/job_goldzone.py"
-}
+
 folder_scripts_jobs = "scripts_jobs"
+
 folder_scripts_lambda = "scripts_lambda"
+
 scripts_lambda_path = {
   "update_tables_glue" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/update_tables_glue/update_tables_glue.zip"
   "run_crawlers" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/run_crawlers/run_crawlers.zip"
   "run_jobs" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/run_jobs/run_jobs.zip"
+  "event_s3" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/event_s3/event_s3.zip"
 }
 
 bucket_scripts_lambda = "lambdafunctions"
+
 cloudwatch_log_group_name = "cloudwatch_log_group"

@@ -30,6 +30,8 @@ variable "type_encrypted" {
 variable "scripts_jobs_path" {
   description = "Script jobs location"
   type        = map(string)
+  default     = {"job_silverzone" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/jobs/job_silverzone.py"
+                "job_goldzone" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/jobs/job_goldzone.py"}
 }
 
 variable "folder_scripts_jobs" {

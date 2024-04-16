@@ -1,7 +1,6 @@
 #--------------------------------------
 # Step Function - Workflow
 #--------------------------------------
-
 resource "aws_sfn_state_machine" "data_processing_workflow" {
   name          = var.step_function_name
   role_arn      = var.step_function_role_arn

@@ -7,7 +7,6 @@ module "s3" {
   tags = var.tags
   folder_names_buckets  = var.folder_names_buckets
   bucket_scripts_jobs = var.bucket_scripts_jobs
-  scripts_jobs_path = var.scripts_jobs_path
   folder_scripts_jobs = var.folder_scripts_jobs
   bucket_scripts_lambda = var.bucket_scripts_lambda
   folder_scripts_lambda = var.folder_scripts_lambda
@@ -66,4 +65,4 @@ module "step_function" {
      job_arns               = module.glue.job_arns
      lambda_function_arns   = tolist(values(module.lambda.lambda_function_arns))
      step_function_role_arn  = module.iam.step_function_role_arn
-   }
+}

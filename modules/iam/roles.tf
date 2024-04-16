@@ -104,32 +104,26 @@ resource "aws_iam_role" "lambda_glue_role" {
     })
   }
   inline_policy {
-    name = "lambda-athena-access"
+    name = var.policy_lambda_athena_name
     policy = jsonencode({
     Version = var.policy_version,
     Statement = [
       {
         Effect    = var.effect_policy,
-        Action    = [
-          "athena:StartQueryExecution",
-          "athena:GetQueryExecution",
-          "athena:GetQueryResults"
-        ],
+        Action    = var.policy_lambda_athena_actions,
         Resource  = var.resource_policy
       }
     ]
   })
 }
   inline_policy {
-    name = "lambda-cloudwatch-access"
+    name = var.policy_lambda_cloudwatch_name
     policy = jsonencode({
     Version = var.policy_version,
     Statement = [
       {
         Effect    = var.effect_policy,
-        Action    = [
-          "logs:FilterLogEvents"
-        ],
+        Action    = var.policy_lambda_cloudwatch_actions,
         Resource  = var.resource_policy
       }
     ]
@@ -148,13 +142,13 @@ data "aws_iam_policy_document" "lambda_assume_role_policy" {
   }
 }
 
-# Agrega politica de permisos a Athena
-
 #---------------------------------------
 # Rol - AWS Step Function
 #---------------------------------------
 resource "aws_iam_role" "step_function_role" {
-  name = "step_function_role"
+  name        = var.role_step_function_name
+  description = var.role_step_function_description
+  name_prefix = var.role_step_function_name_prefix  
 
   assume_role_policy = jsonencode({
     "Version" : var.policy_version,
@@ -171,25 +165,21 @@ resource "aws_iam_role" "step_function_role" {
 }
 
 resource "aws_iam_policy_attachment" "step_function_policy_attachment" {
-  name       = "step_function_policy_attachment"
+  name       = var.policy_step_function_attachment
   roles      = [aws_iam_role.step_function_role.name]
   policy_arn = aws_iam_policy.step_function_policy.arn
 }
 
 resource "aws_iam_policy" "step_function_policy" {
-  name        = "step_function_policy"
-  description = "Permisos para ejecutar AWS Glue Crawler, AWS Glue ETL Jobs y AWS Lambdas"
+  name        = var.policy_step_function_name
 
   policy = jsonencode({
     "Version" : var.policy_version,
     "Statement" : [
       {
         "Effect" : var.effect_policy,
-        "Action" : [
-          "glue:StartJobRun",
-          "lambda:InvokeFunction"
-        ],
-        "Resource" : "*"
+        "Action" : var.policy_step_function_actions,
+        "Resource" : var.resource_policy
       }
     ]
   })

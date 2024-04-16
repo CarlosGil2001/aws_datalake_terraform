@@ -19,7 +19,18 @@ resource "aws_s3_bucket" "datalake_buckets" {
   lifecycle {
     prevent_destroy = false
   }
-  
+}
+
+resource "aws_s3_bucket_notification" "bucket_bronze_notification" {
+  bucket = aws_s3_bucket.datalake_buckets[element([for name in var.bucket_names : name if name == "bronzezone"], 0)].id
+  lambda_function {
+    lambda_function_arn = "arn:aws:lambda:us-east-1:905418224712:function:lambda-s3_event"
+    events = ["s3:ObjectCreated:*"]
+    filter_prefix = ""
+    filter_suffix = ""
+    
+  }
+  #depends_on = [ aws_s3_bucket.datalake_buckets ]
 }
 
 #------------------------------------------------------
@@ -138,3 +149,6 @@ resource "aws_s3_bucket" "bucket_athena" {
   }
   
 }
+
+
+

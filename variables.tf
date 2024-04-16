@@ -2,7 +2,7 @@
 #    Tags del Proyecto
 #---------------------------------------
 variable "tags" {
-  description = "Tags del proyecto"
+  description = "Project tags"
   type = map(string)
 }
 
@@ -11,23 +11,18 @@ variable "tags" {
 #---------------------------------------
 
 variable "bucket_names" {
-  description = "Nombres de los buckets de S3"
+  description = "Data lake layers"
   type        = set(string)
 }
 
 variable "folder_names_buckets" {
-  description = "Nombres de los folders en los buckets"
+  description = "Folder names"
   type        = list(string)
 }
 
 variable "bucket_scripts_jobs" {
-   description = "Buckets de los scripts jobs"
+   description = "Bucket of job scripts"
    type        = string
-}
-
-variable "scripts_jobs_path" {
-   description = "Path de los scripts job"
-   type        = map(string)
 }
 
 variable "folder_scripts_jobs" {
@@ -36,7 +31,7 @@ variable "folder_scripts_jobs" {
 }
 
 variable "bucket_scripts_lambda" {
-   description = "Buckets de los scripts lambda"
+   description = "Bucket of lambda scripts"
    type        = string
 }
 
@@ -46,7 +41,7 @@ variable "scripts_lambda_path" {
 }
 
 variable "folder_scripts_lambda" {
-   description = "Folders de los scripts lambda"
+   description = "Lambda scripts folder"
    type        = string
 }
 
@@ -55,7 +50,7 @@ variable "folder_scripts_lambda" {
 #---------------------------------------------------
 
 variable "catalog_database_name" {
-  description = "Nombre de Database Catalog"
+  description = "Database Catalog Name."
   type        = string
 }
 
@@ -63,7 +58,7 @@ variable "catalog_database_name" {
 # AWS Glue crawler
 #---------------------------------------------------
 variable "crawler_names" {
-  description = "Nombre de Crawler"
+  description = "Crawlers names."
   type = list(string)
 }
 
@@ -71,10 +66,9 @@ variable "crawler_names" {
 # AWS Glue job
 #---------------------------------------------------
 variable "job_names" {
-  description = "Nombre de los Jobs"
+  description = "Jobs names."
   type = set(string)
 }
-
 
 #---------------------------------------------------
 # Amazon CloudWatch
