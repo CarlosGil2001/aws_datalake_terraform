@@ -64,3 +64,44 @@ variable "lambda_function_arns" {
   description = "ARN lambdas."
   type = list(string)
 }
+
+variable "step_function_name" {
+  description   = "Step Function Name"
+  type          = string
+}
+
+variable "lambda_permission_not" {
+  description   = "Lambda Notification"
+  type          = string
+  default       = "AllowExecutionFromS3Bucket"
+}
+
+variable "lambda_permission_not_action" {
+  description   = "Lambda Notification Action"
+  type          = string
+  default       = "lambda:InvokeFunction"
+}
+
+variable "lambda_permission_not_principal" {
+  description   = "Lambda Notification Principal"
+  type          = string
+  default       = "s3.amazonaws.com"
+}
+
+variable "s3_notification_lambda_event" {
+  description   = "S3 Notification Event"
+  type          = list(string)
+  default       = ["s3:ObjectCreated:*"]
+}
+
+variable "upload_object_data_s3" {
+  description = "Data Upload Object"
+  type        = string
+  default     = "ds_salaries.csv"
+}
+
+variable "upload_object_data_s3_location" {
+  description = "Data Upload Object Location"
+  type        = string
+  default     = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/data"
+}

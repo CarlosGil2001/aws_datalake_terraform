@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 
 def lambda_handler(event, context):
-    time.sleep(10) 
+    time.sleep(5) 
 
     glue_client = boto3.client('glue')
     logs_client = boto3.client('logs')
@@ -23,7 +23,7 @@ def lambda_handler(event, context):
         crawler_response = glue_client.get_crawler(Name=crawler_name)
         crawler_state = crawler_response['Crawler']['State']
 
-        if crawler_state == 'STOPPING':
+        if crawler_state == 'READY':
             print('El Crawler se ejecutó correctamente.')
             return 200
         elif crawler_state == 'FAILED':

@@ -12,6 +12,7 @@ module "s3" {
   folder_scripts_lambda = var.folder_scripts_lambda
   scripts_lambda_path = var.scripts_lambda_path
   lambda_function_arns = tolist(values(module.lambda.lambda_function_arns))
+  step_function_name = module.step_function.step_function_name
 }
 
 #----------------------------------------

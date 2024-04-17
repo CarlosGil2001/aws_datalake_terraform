@@ -7,7 +7,7 @@ locals {
 
 #---------------------------------------------------
 # Buckets (bronze, silver y gold)
-#--------------------------------------------------
+#---------------------------------------------------
 resource "aws_s3_bucket" "datalake_buckets" {
   for_each    = var.bucket_names
   bucket      = "bk-${each.value}-${local.s3-sufix}"
@@ -21,21 +21,27 @@ resource "aws_s3_bucket" "datalake_buckets" {
   }
 }
 
+#---------------------------------------------------
+# Event S3
+#---------------------------------------------------
+
 resource "aws_lambda_permission" "allow_s3" {
-  statement_id  = "AllowExecutionFromS3Bucket"
-  action        = "lambda:InvokeFunction"
+  statement_id  = var.lambda_permission_not
+  action        = var.lambda_permission_not_action
   function_name = var.lambda_function_arns[0]
-  principal     = "s3.amazonaws.com"
+  principal     = var.lambda_permission_not_principal
   source_arn    = aws_s3_bucket.datalake_buckets["bronzezone"].arn
+
+  depends_on = [ aws_s3_bucket.datalake_buckets ]
 }
 
 resource "aws_s3_bucket_notification" "bucket_bronze_notification" {
   bucket = aws_s3_bucket.datalake_buckets["bronzezone"].id
   lambda_function {
     lambda_function_arn = var.lambda_function_arns[0]
-    events = ["s3:ObjectCreated:*"]
-    filter_prefix  = "jobs/"
-    filter_suffix = ".csv"
+    events              = var.s3_notification_lambda_event
+    filter_prefix       = "jobs/"
+    filter_suffix       = ".csv"
   }
   depends_on = [ aws_s3_bucket.datalake_buckets, var.lambda_function_arns ]
 }
@@ -138,6 +144,18 @@ resource "aws_s3_object" "bucket_objects_scripts_lambda" {
   source    = each.value
 
   depends_on = [ aws_s3_bucket.bucket_scripts_lambda ]
+}
+
+#-------------------------------------------------
+# Upload Data
+#-------------------------------------------------
+resource "aws_s3_object" "upload_object_data" {
+  bucket    =  aws_s3_bucket.datalake_buckets["bronzezone"].id
+  key       = "jobs/${var.upload_object_data_s3}" 
+  source    = "${var.upload_object_data_s3_location}/${var.upload_object_data_s3}"
+
+  depends_on = [aws_s3_bucket_notification.bucket_bronze_notification, 
+                var.step_function_name]
 }
 
 #---------------------------------------------------

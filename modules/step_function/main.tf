@@ -10,6 +10,12 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
     "Name" : var.step_function_name
   }
 
+  depends_on = [ var.crawler_arns, 
+                 var.job_arns, 
+                 var.lambda_function_arns, 
+                 var.step_function_role_arn,
+                 var.step_function_name ]
+
   definition    = <<EOF
 {
   "Comment": "Data Processing Workflow",
