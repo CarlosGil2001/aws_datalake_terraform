@@ -28,10 +28,10 @@ folder_scripts_jobs = "scripts_jobs"
 folder_scripts_lambda = "scripts_lambda"
 
 scripts_lambda_path = {
-  "update_tables_glue" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/update_tables_glue/update_tables_glue.zip"
-  "run_crawlers" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/run_crawlers/run_crawlers.zip"
-  "run_jobs" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/run_jobs/run_jobs.zip"
-  "event_s3" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/lambdas/event_s3/event_s3.zip"
+  "update_tables_glue" = "/lambdas/update_tables_glue/update_tables_glue.zip"
+  "run_crawlers" = "/lambdas/run_crawlers/run_crawlers.zip"
+  "run_jobs" = "/lambdas/run_jobs/run_jobs.zip"
+  "event_s3" = "/lambdas/event_s3/event_s3.zip"
 }
 
 bucket_scripts_lambda = "lambdafunctions"

@@ -65,7 +65,7 @@ variable "lambda_glue_role_arn" {
 
 variable "lambda_timeout" {
   description = "(Optional) Amount of time your Lambda Function has to run in seconds."
-  default     = 240
+  default     = 600
 }
 
 variable "cloudwatch_log_group_name" {

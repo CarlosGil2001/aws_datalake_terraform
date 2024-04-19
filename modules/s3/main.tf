@@ -113,7 +113,7 @@ resource "aws_s3_object" "bucket_objects_scripts" {
   for_each  = var.scripts_jobs_path
   bucket    = aws_s3_bucket.bucket_scripts_jobs.bucket
   key       = "${var.folder_scripts_jobs}/${each.key}.py" 
-  source    = each.value
+  source    = "${path.root}${each.value}"
 
   depends_on = [ aws_s3_bucket.bucket_scripts_jobs ]
 
@@ -141,7 +141,7 @@ resource "aws_s3_object" "bucket_objects_scripts_lambda" {
   for_each  = var.scripts_lambda_path
   bucket    = aws_s3_bucket.bucket_scripts_lambda.bucket
   key       = "${var.folder_scripts_lambda}/${each.key}.zip" 
-  source    = each.value
+  source    = "${path.root}${each.value}"
 
   depends_on = [ aws_s3_bucket.bucket_scripts_lambda ]
 }
@@ -152,7 +152,7 @@ resource "aws_s3_object" "bucket_objects_scripts_lambda" {
 resource "aws_s3_object" "upload_object_data" {
   bucket    =  aws_s3_bucket.datalake_buckets["bronzezone"].id
   key       = "jobs/${var.upload_object_data_s3}" 
-  source    = "${var.upload_object_data_s3_location}/${var.upload_object_data_s3}"
+  source    = "${path.root}${var.upload_object_data_s3_location}/${var.upload_object_data_s3}"
 
   depends_on = [aws_s3_bucket_notification.bucket_bronze_notification, 
                 var.step_function_name]

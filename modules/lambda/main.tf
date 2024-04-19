@@ -12,7 +12,7 @@ resource "aws_lambda_function" "lambda_function_glue" {
   memory_size      = var.lambda_memory_size
   architectures    = var.lambda_architectures
   timeout          = var.lambda_timeout
-  filename         = var.scripts_lambda_path[var.lambda_zip_files[count.index]]
+  filename         = "${path.root}${var.scripts_lambda_path[var.lambda_zip_files[count.index]]}"
 
   logging_config {
     log_format = "Text"

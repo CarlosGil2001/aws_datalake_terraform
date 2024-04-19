@@ -30,8 +30,8 @@ variable "type_encrypted" {
 variable "scripts_jobs_path" {
   description = "Script jobs location"
   type        = map(string)
-  default     = {"job_silverzone" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/jobs/job_silverzone.py"
-                "job_goldzone" = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/jobs/job_goldzone.py"}
+  default     = {"job_silverzone" = "/jobs/job_silverzone.py"
+                "job_goldzone" = "/jobs/job_goldzone.py"}
 }
 
 variable "folder_scripts_jobs" {
@@ -103,5 +103,5 @@ variable "upload_object_data_s3" {
 variable "upload_object_data_s3_location" {
   description = "Data Upload Object Location"
   type        = string
-  default     = "C:/Users/carlo/Desktop/Projects Terraform/charla_aws/data"
+  default     = "/data"
 }
