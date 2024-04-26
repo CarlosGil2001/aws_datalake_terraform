@@ -1,3 +1,12 @@
+
+#----------------------------------
+# ACOOUNT ID
+#----------------------------------
+data "aws_caller_identity" "current" {}
+locals {
+    account_id = data.aws_caller_identity.current.account_id
+}
+
 #--------------------------------------
 # Step Function - Workflow
 #--------------------------------------
@@ -23,7 +32,7 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
   "States": {
     "RunCrawlerBronze": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-run_crawlers",
+      "Resource": "arn:aws:lambda:us-east-1:${local.account_id}:function:lambda-run_crawlers",
       "Parameters": {
         "crawler_name": "dev_crw_bronzezone"
       },
@@ -31,7 +40,7 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
     },
     "UpdateTableBronze": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-update_tables_glue",
+      "Resource": "arn:aws:lambda:us-east-1:${local.account_id}:function:lambda-update_tables_glue",
       "Parameters": {
         "old_table_name": "jobs",
         "new_table_name": "ds_salaries_br"
@@ -40,7 +49,7 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
     },
     "RunETLJobSilver": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-run_jobs",
+      "Resource": "arn:aws:lambda:us-east-1:${local.account_id}:function:lambda-run_jobs",
       "Parameters": {
         "job_name": "dev_job_silverzone"
       },
@@ -69,7 +78,7 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
     },
     "RunCrawlerSilver": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-run_crawlers",
+      "Resource": "arn:aws:lambda:us-east-1:${local.account_id}:function:lambda-run_crawlers",
       "Parameters": {
         "crawler_name": "dev_crw_silverzone"
       },
@@ -77,7 +86,7 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
     },
     "UpdateTableSilver": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-update_tables_glue",
+      "Resource": "arn:aws:lambda:us-east-1:${local.account_id}:function:lambda-update_tables_glue",
       "Parameters": {
         "old_table_name": "jobs",
         "new_table_name": "ds_salaries_sl"
@@ -86,7 +95,7 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
     },
     "RunETLJobGold": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-run_jobs",
+      "Resource": "arn:aws:lambda:us-east-1:${local.account_id}:function:lambda-run_jobs",
       "Parameters": {
         "job_name": "dev_job_goldzone"
       },
@@ -110,7 +119,7 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
     },
     "RunCrawlerGold": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-run_crawlers",
+      "Resource": "arn:aws:lambda:us-east-1:${local.account_id}:function:lambda-run_crawlers",
       "Parameters": {
         "crawler_name": "dev_crw_goldzone"
       },
@@ -118,7 +127,7 @@ resource "aws_sfn_state_machine" "data_processing_workflow" {
     },
     "UpdateTableGold": {
       "Type": "Task",
-      "Resource": "arn:aws:lambda:us-east-1:905418224712:function:lambda-update_tables_glue",
+      "Resource": "arn:aws:lambda:us-east-1:${local.account_id}:function:lambda-update_tables_glue",
       "Parameters": {
         "old_table_name": "jobs",
         "new_table_name": "ds_salaries_gd"
