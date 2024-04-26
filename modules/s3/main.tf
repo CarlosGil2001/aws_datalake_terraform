@@ -158,21 +158,5 @@ resource "aws_s3_object" "upload_object_data" {
                 var.step_function_name]
 }
 
-#---------------------------------------------------
-# Bucket Athena
-#--------------------------------------------------
-# resource "aws_s3_bucket" "bucket_athena" {
-#   bucket      = "bk-${var.bucket_athena}-${local.s3-sufix}"
-#   tags = {
-#     Name = var.bucket_athena
-#   }
-#   force_destroy = true
-  
-#   lifecycle {
-#     prevent_destroy = false
-#   }
-  
-# }
-
 
 
