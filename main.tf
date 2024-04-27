@@ -50,7 +50,7 @@ module "cloudwatch" {
 }
 
 #----------------------------------------
-# Amazon Lambda
+# Module Amazon Lambda
 #----------------------------------------
 module "lambda" {
   source = "./modules/lambda"
@@ -62,6 +62,9 @@ module "lambda" {
   cloudwatch_log_group_name = module.cloudwatch.cloudwatch_log_group_name
 }
 
+#----------------------------------------
+# Module Step Function
+#----------------------------------------
 module "step_function" {
      source = "./modules/step_function"
      crawler_arns           = tolist(values(module.glue.crawler_arns))
