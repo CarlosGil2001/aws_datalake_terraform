@@ -4,7 +4,7 @@ def lambda_handler(event, context):
 
     step_function = boto3.client('stepfunctions')
     response = step_function.start_execution(
-        stateMachineArn='arn:aws:states:us-east-1:905418224712:stateMachine:processing_workflow',
+        stateMachineArn='arn_step_function',
         input='{}'
     )
     return {
